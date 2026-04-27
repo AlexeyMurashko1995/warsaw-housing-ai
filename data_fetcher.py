@@ -28,13 +28,7 @@ def extract_apartment_info(listing) -> dict:
         final_price = int(float(price_value))
 
         # 3. Area Extraction via Sibling
-        area_tag = listing.find('dt', string='Cena за метр kwadratowy')
-        # If the tag above doesn't match exactly, we use the logic for area extraction
-        # Note: In your specific case, you were searching for m2 price to get area.
-        # Keeping your logic but cleaning variable names.
-
-        area_tag = listing.find('dt', string='Cena za метр kwadratowy') or \
-                   listing.find('dt', string='Cena za metr kwadratowy')
+        area_tag = listing.find('dt', string='Cena za metr kwadratowy')
 
         if area_tag:
             raw_area = area_tag.find_next_sibling('dd').text.strip()
@@ -124,3 +118,20 @@ if apartments:
     print('='*40)
 else:
     print('FAILURE: No data collected.')
+
+stats = {}
+
+for flat in apartments:
+    flat_name = flat['district']
+    meter_price = flat['price per meter 2']
+    if flat_name not in stats:
+        stats[flat_name] = {'total_price': meter_price, 'count': 1}
+    else:
+        stats[flat_name]['total_price'] += meter_price
+        stats[flat_name]['count'] += 1
+
+for stat in sorted(stats):
+    total = stats[stat]['total_price']
+    count = stats[stat]['count']
+    district_average = total / count
+    print(f'District: {stat}, average: {district_average:.2f} zł, number of ads: {stats[stat]['count']}')
