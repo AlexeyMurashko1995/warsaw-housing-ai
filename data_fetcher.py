@@ -3,6 +3,7 @@ import csv
 import requests
 from bs4 import BeautifulSoup
 
+
 # --- Configuration ---
 target_url = 'https://www.otodom.pl/pl/wyniki/sprzedaz/mieszkanie/mazowieckie/warszawa/warszawa/warszawa?limit=36&ownerTypeSingleSelect=ALL&by=DEFAULT&direction=DESC'
 headers = {
@@ -70,15 +71,21 @@ for page in range(1, 6):
     print(f'Page {page} finished. Waiting 2 seconds...')
     time.sleep(2)
 
-print(apartments)
-
 # --- Data Persistence (CSV Export) ---
 if apartments:
     filename = 'warsaw_apartments.csv'
     keys = apartments[0].keys()
 
+    average_price = round(sum(flat['price'] for flat in apartments) / len(apartments), 2)
+    average_area = round(sum(flat['area'] for flat in apartments) / len(apartments), 2)
+    avera_price_per_meter_2 = round(sum(flat['price per meter 2'] for flat in apartments) / len(apartments), 2)
+
+    print(f'Average flat price: {average_price}')
+    print(f'Average local area: {average_area}')
+    print(f'Average price for m2: {avera_price_per_meter_2}')
+
     try:
-        with open(filename, 'w', newline='', encoding='utf-8') as output_file:
+        with open(filename, 'w', newline='', encoding='utf-8-sig') as output_file:
             dict_writer = csv.DictWriter(output_file, fieldnames=keys)
             dict_writer.writeheader()
             dict_writer.writerows(apartments)
@@ -89,3 +96,5 @@ if apartments:
         print(f'ERROR: Something went wrong: {e}')
 else:
     print('FAILURE: No data collected. The list is empty.')
+
+
