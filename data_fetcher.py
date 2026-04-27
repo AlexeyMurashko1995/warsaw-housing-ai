@@ -76,13 +76,13 @@ if apartments:
     filename = 'warsaw_apartments.csv'
     keys = apartments[0].keys()
 
-    average_price = round(sum(flat['price'] for flat in apartments) / len(apartments), 2)
+    average_price = sum(flat['price'] for flat in apartments) / len(apartments)
     average_area = round(sum(flat['area'] for flat in apartments) / len(apartments), 2)
-    avera_price_per_meter_2 = round(sum(flat['price per meter 2'] for flat in apartments) / len(apartments), 2)
+    average_price_per_meter_2 = round(sum(flat['price per meter 2'] for flat in apartments) / len(apartments), 2)
 
-    print(f'Average flat price: {average_price}')
+    print(f'Average flat price: {average_price:,.2f}')
     print(f'Average local area: {average_area}')
-    print(f'Average price for m2: {avera_price_per_meter_2}')
+    print(f'Average price for m2: {average_price_per_meter_2}')
 
     try:
         with open(filename, 'w', newline='', encoding='utf-8-sig') as output_file:
