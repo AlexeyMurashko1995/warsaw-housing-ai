@@ -38,14 +38,16 @@ def extract_apartment_info(listing) -> dict:
                 area_value = float(clean_area.replace(',', '.'))
                 # 4. Calculation: Price per Square Meter
                 price_per_m2 = round(final_price / area_value, 0)
-
+                if final_price < 100000 or final_price > 10000000:
+                    return None
                 # 5. Final Data Structure
-                return {
-                    'price': final_price,
-                    'area': area_value,
-                    'district': district_value,
-                    'price per meter 2': price_per_m2
-                }
+                else:
+                    return {
+                        'price': final_price,
+                        'area': area_value,
+                        'district': district_value,
+                        'price per meter 2': price_per_m2
+                    }
 
             except ValueError:
                 print(f'Could not convert area: {clean_area}')
@@ -130,8 +132,16 @@ for flat in apartments:
         stats[flat_name]['total_price'] += meter_price
         stats[flat_name]['count'] += 1
 
+cheapest_district = ''
+min_avg_price = 999999999999999
+
 for stat in sorted(stats):
     total = stats[stat]['total_price']
     count = stats[stat]['count']
     district_average = total / count
+    if district_average < min_avg_price:
+        min_avg_price = district_average
+        cheapest_district = stat
     print(f'District: {stat}, average: {district_average:.2f} zł, number of ads: {stats[stat]['count']}')
+
+print(f'Cheapest district: {cheapest_district}; Min average price: {min_avg_price}')
