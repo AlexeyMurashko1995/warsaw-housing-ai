@@ -82,7 +82,7 @@ headers = {
 apartments = []
 
 # --- Network Request Loop ---
-for page in range(1, 6):
+for page in range(1, 30):
     current_url = f'{target_url}&page={page}'
     response = requests.get(current_url, headers=headers, timeout=10)
     print(f'Response status code for Page {page}: {response.status_code}')
