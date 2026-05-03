@@ -1,20 +1,19 @@
 import pandas as pd
 
-
-df = pd.read_csv('warsaw_apartments.csv', encoding='utf-8-sig')
+df = pd.read_csv('apartments_lab.csv', encoding='utf-8-sig')
 
 df.head()
 df.info()
 
-bialoleka_filtered = df[(df['district'] == 'Białołęka') & (df['price'] > 400000) & (df['price'] < 600000)]
+df['price_usd'] = df['price'] * 0.25
+df = df.drop('price_usd', axis=1)
 
-best_deals = bialoleka_filtered.sort_values(by='price per meter 2', ascending=True)
-best_deals = best_deals.reset_index(drop=True)
+df = df.rename(columns={
+    'district': 'area_name',
+    'price per meter 2': 'price_m2'
+})
 
-all_bialoleka = df[df['district'] == 'Białołęka']
-average_price = all_bialoleka['price per meter 2'].mean()
+expensive_m2 = df.groupby('area_name')['price_m2'].mean()
+expensive_m2 = expensive_m2.sort_values(ascending=False)
 
-print(f'Average price in Białołęka: {average_price:.2f} zł/m2')
-print(f'Total suitable variants found: {len(best_deals)}')
-print('Top 5 best deals:')
-print(best_deals.head())
+print(expensive_m2)

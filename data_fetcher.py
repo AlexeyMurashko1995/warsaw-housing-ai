@@ -144,4 +144,4 @@ for stat in sorted(stats):
         cheapest_district = stat
     print(f'District: {stat}, average: {district_average:.2f} zł, number of ads: {stats[stat]['count']}')
 
-print(f'Cheapest district: {cheapest_district}; Min average price: {min_avg_price}')
+print(f'Cheapest district: {cheapest_district}; Min average price: {min_avg_price} zł')
