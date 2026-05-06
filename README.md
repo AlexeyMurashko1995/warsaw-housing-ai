@@ -1,22 +1,37 @@
-# Warsaw Housing AI Analyzer 🏠🤖
+# Warsaw Real Estate Price Predictor 🏠🤖
 
-A data science project designed to analyze and predict real estate prices in Warsaw, Poland.
+A production-ready data science project designed to scrape, analyze, and predict apartment prices in Warsaw, Poland.
 
 ## 🎯 Goal
-Build a machine learning model that estimates apartment prices based on location, area, and other key features.
+My goal is to find and secure an IT position in Summer 2026. This project demonstrates my ability to handle the full data lifecycle: from raw web scraping to deploying a predictive AI model.
+
+## 📊 Project Performance
+- **Model Accuracy (R² Score):** **0.787** (Significant improvement from baseline 0.56).
+- **Dataset Size:** 1,350+ unique verified listings from Otodom.
+- **Key Features:** Area (m²), Number of Rooms, and District (One-Hot Encoded).
 
 ## 🛠 Tech Stack
 - **Language:** Python 3.x
-- **Libraries:** BeautifulSoup4 (Scraping), Pandas (Data Cleaning), Scikit-learn (AI/ML)
-- **Tools:** Git, VS Code
+- **Scraping:** `BeautifulSoup4`, `Requests`
+- **Data Engineering:** `Pandas`, `NumPy`
+- **Machine Learning:** `Scikit-learn` (Linear Regression)
+- **Visualization:** `Matplotlib`
 
 ## 📁 Project Structure
-- `data_fetcher.py`: Scripts for web scraping real estate portals.
-- `data/`: (Local only) Raw and cleaned datasets.
-- `analysis.py`: Data processing and visualization.
+- `data_fetcher.py`: Robust scraper with error handling and multi-page support.
+- `analytics_pro.py`: (Formerly `pandas_grouping_practice.py`) Data cleaning, outlier removal, and model training.
+- `warsaw_apartments.csv`: Raw collected data.
+- `apartments_clean.csv`: Preprocessed dataset used for training.
 
-## 📈 Status
-- [x] Project initialized
-- [ ] Web scraper development (Current Focus)
-- [ ] Data cleaning and normalization
-- [ ] AI model training
+## 🚀 Key Features
+- **Data Imputation:** Missing values in the 'rooms' column are handled using median values to ensure outlier robustness.
+- **Outlier Filtering:** Automated removal of listings with unrealistic prices per square meter.
+- **Price Prediction:** Custom function to estimate the price of any apartment in Warsaw based on user input.
+
+## 📈 Roadmap
+- [x] Initial Scraper Setup
+- [x] Room Count Extraction & Integration
+- [x] Data Cleaning & Imputation (Median-based)
+- [x] Model Training & R² Optimization
+- [ ] Code Refactoring for Clean Code Standards
+- [ ] Deployment of a simple web interface (Streamlit)
