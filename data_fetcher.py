@@ -17,6 +17,15 @@ def extract_apartment_info(listing) -> dict:
         except IndexError:
             district_value = 'Unknown'
 
+    # 1. Rooms Extraction (New Logic Integrated)
+    rooms_value = 0
+    rooms_tag = listing.find('dd', class_='css-17je0kd e1am572w2')
+    if rooms_tag:
+        try:
+            rooms_value = int(rooms_tag.text.split()[0])
+        except (ValueError, IndexError):
+            rooms_value = 0
+
     # 2. Price Extraction & Validation
     price_tag = listing.find('span', class_='css-6t3bie')
 
@@ -24,33 +33,37 @@ def extract_apartment_info(listing) -> dict:
         clean_price = price_tag.text
         price_value = clean_price.replace('\xa0', '').replace('zł', '').replace(',', '.')
 
-        # Convert string -> float -> int
-        final_price = int(float(price_value))
+        try:
+            final_price = int(float(price_value))
 
-        # 3. Area Extraction via Sibling
-        area_tag = listing.find('dt', string='Cena za metr kwadratowy')
+            # 3. Area Extraction via Sibling
+            area_tag = listing.find('dt', string='Cena за метр kwadratowy')
+            if not area_tag:
+                 area_tag = listing.find('dt', string='Cena za metr kwadratowy')
 
-        if area_tag:
-            raw_area = area_tag.find_next_sibling('dd').text.strip()
-            clean_area = raw_area.split()[0].split('-')[0]
+            if area_tag:
+                raw_area = area_tag.find_next_sibling('dd').text.strip()
+                clean_area = raw_area.split()[0].split('-')[0]
 
-            try:
                 area_value = float(clean_area.replace(',', '.'))
+
                 # 4. Calculation: Price per Square Meter
                 price_per_m2 = round(final_price / area_value, 0)
+
                 if final_price < 100000 or final_price > 10000000:
                     return None
-                # 5. Final Data Structure
                 else:
+                    # 5. Final Data Structure with Rooms
                     return {
                         'price': final_price,
                         'area': area_value,
+                        'rooms': rooms_value,
                         'district': district_value,
                         'price per meter 2': price_per_m2
                     }
 
-            except ValueError:
-                print(f'Could not convert area: {clean_area}')
+        except (ValueError, ZeroDivisionError) as e:
+            print(f'Error processing listing: {e}')
 
     return None
 
@@ -91,7 +104,6 @@ for page in range(1, 30):
         soup = BeautifulSoup(response.text, 'html.parser')
         listings = soup.find_all('div', class_='css-1lyza52 eqir0f90')
 
-        # Process each listing on the current page
         for listing in listings:
             result = extract_apartment_info(listing)
             if result:
@@ -101,12 +113,11 @@ for page in range(1, 30):
     print(f'Page {page} finished. Waiting 2 seconds...')
     time.sleep(2)
 
-# --- Post-Processing & Analytics ---
+# --- Post-Processing ---
 if apartments:
     file_path = 'warsaw_apartments.csv'
     save_as_csv(apartments, file_path)
 
-    # Calculate Market Averages
     avg_price = sum(flat['price'] for flat in apartments) / len(apartments)
     avg_area = round(sum(flat['area'] for flat in apartments) / len(apartments), 2)
     avg_price_m2 = round(sum(flat['price per meter 2'] for flat in apartments) / len(apartments), 2)
@@ -114,15 +125,14 @@ if apartments:
     print('\n' + '='*40)
     print('WARSAW REAL ESTATE REPORT')
     print('='*40)
-    print(f'Average Price:{avg_price:,.2f} PLN')
-    print(f'Average Area:{avg_area} m2')
-    print(f'Average Price/m2:{avg_price_m2} PLN')
+    print(f'Average Price: {avg_price:,.2f} PLN')
+    print(f'Average Area: {avg_area} m2')
+    print(f'Average Price/m2: {avg_price_m2} PLN')
     print('='*40)
 else:
     print('FAILURE: No data collected.')
 
 stats = {}
-
 for flat in apartments:
     flat_name = flat['district']
     meter_price = flat['price per meter 2']
@@ -142,6 +152,6 @@ for stat in sorted(stats):
     if district_average < min_avg_price:
         min_avg_price = district_average
         cheapest_district = stat
-    print(f'District: {stat}, average: {district_average:.2f} zł, number of ads: {stats[stat]['count']}')
+    print(f'District: {stat}, average: {district_average:.2f} zł, number of ads: {count}')
 
-print(f'Cheapest district: {cheapest_district}; Min average price: {min_avg_price} zł')
+print(f'\nCheapest district: {cheapest_district}; Min average price: {min_avg_price:.2f} zł')
