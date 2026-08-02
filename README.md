@@ -1,9 +1,9 @@
 # Warsaw Real Estate Price Predictor 🏠🤖
 
-A production-ready data science project designed to scrape, analyze, and predict apartment prices in Warsaw, Poland.
+A production-ready data science project designed to scrape, clean, analyze, and predict apartment prices in Warsaw, Poland.
 
 ## 🎯 Goal
-My goal is to find and secure an IT position in Summer 2026. This project demonstrates my ability to handle the full data lifecycle: from raw web scraping to deploying a predictive AI model.
+This project demonstrates the full end-to-end data engineering and machine learning lifecycle: from scraping raw web listings to preprocessing, feature engineering, and deploying a predictive AI model.
 
 ## 📊 Project Performance
 - **Model Accuracy (R² Score):** **0.787** (Significant improvement from baseline 0.56).
@@ -19,7 +19,7 @@ My goal is to find and secure an IT position in Summer 2026. This project demons
 
 ## 📁 Project Structure
 - `data_fetcher.py`: Robust scraper with error handling and multi-page support.
-- `analytics_pro.py`: (Formerly `pandas_grouping_practice.py`) Data cleaning, outlier removal, and model training.
+- `analytics_pro.py`: Data cleaning, median imputation, outlier removal, and model training.
 - `warsaw_apartments.csv`: Raw collected data.
 - `apartments_clean.csv`: Preprocessed dataset used for training.
 
@@ -33,5 +33,5 @@ My goal is to find and secure an IT position in Summer 2026. This project demons
 - [x] Room Count Extraction & Integration
 - [x] Data Cleaning & Imputation (Median-based)
 - [x] Model Training & R² Optimization
-- [ ] Code Refactoring for Clean Code Standards
-- [ ] Deployment of a simple web interface (Streamlit)
+- [x] Code Refactoring for Clean Code Standards
+- [ ] Web Interface Deployment (Streamlit)
